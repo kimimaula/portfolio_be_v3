@@ -11,6 +11,7 @@ app.get("/", (req, res) => res.send("Hello World"));
 mongoose
   .connect(process.env.MONGOURI)
   .then(() => {
+    console.log(`-----connected, now listening to ${process.env.PORT} `);
     app.listen(process.env.PORT);
   })
   .catch((err) => {
