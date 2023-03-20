@@ -1,49 +1,74 @@
-const User = require("../models/user");
-const validateRegisterInput = require("../validation/register");
-
 const saltRounds = 12;
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const isEmpty = require("is-empty");
 
-//<------------------------gets specific user, needs token as this will be the dashboard----------------------------------------->
-const getUser = async (req, res, next) => {
-  //   const authHeaderValue = req.headers["authorization"];
+const User = require("../models/user");
+const validateRegisterInput = require("../validation/register");
+const validateLoginInput = require("../Validation/login");
 
-  //   if (!authHeaderValue) {
-  //     return res.status(500).json({
-  //       success: false,
-  //       message: "Whoops, token unavailable. Try to log out and back in again",
-  //     });
-  //   }
+const login = async (req, res, next) => {
+  const { errors, isValid } = await validateLoginInput(req.body);
 
-  //   const token = await authHeaderValue.replace("Bearer ", "");
-  //   const { error, id } = await validateToken(token);
+  if (!isValid) {
+    return res.status(422).json({
+      success: false,
+      message: errors,
+    });
+  }
 
-  //   if (error) {
-  //     return res.status(404).send({
-  //       success: false,
-  //       message: "Whoops, token unavailable. Try to log out and back in again",
-  //     });
-  //   }
+  let user;
+  try {
+    user = await User.findOne({ username: req.body.username });
+  } catch {
+    return res.status(500).json({
+      success: false,
+      message: "Whoops, something went wrong. Please try again later",
+    });
+  }
 
-  //   let currentUser;
+  if (isEmpty(user)) {
+    return res
+      .status(404)
+      .json({ success: false, message: "Whoops, user does not exist" });
+  }
 
-  //   try {
-  //     currentUser = await User.find({ _id: id }, "-password");
-  //   } catch (e) {
-  //     return res.status(500).json({
-  //       success: false,
-  //       message: "Whoops, cannot find the user you are looking for",
-  //     });
-  //   }
-
-  //  if (isEmpty(currentUser)) {
-  //     return res.status(404).json({
-  //       success: false,
-  //       message: "Whoops, cannot find the user you are looking for",
-  //     });
-  //   }
-
-  res.status(201).json({ hey: "Hello world" });
+  bcrypt.compare(req.body.password, user.password, function (err, result) {
+    if (err) {
+      return res
+        .status(500)
+        .json({ success: false, message: "Whoops,passwords do not match" });
+    }
+    if (result) {
+      jwt.sign(
+        {
+          id: user._id,
+          user: user.username,
+          email: user.email,
+        },
+        process.env.SECRETKEY,
+        { expiresIn: "24h" },
+        (err, token) => {
+          if (err) {
+            return res.status(500).json({
+              success: false,
+              message: "Whoops,generating token failed, please try again later",
+            });
+          }
+          res.json({
+            success: true,
+            token: "Bearer " + token,
+            id: user._id,
+            user: user.username,
+          });
+        }
+      );
+    } else {
+      return res
+        .status(500)
+        .json({ success: false, message: "Whoops,passwords do not match" });
+    }
+  });
 };
 
 const register = async (req, res, next) => {
@@ -82,5 +107,5 @@ const register = async (req, res, next) => {
   });
 };
 
-exports.getUser = getUser;
 exports.register = register;
+exports.login = login;
