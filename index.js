@@ -12,9 +12,9 @@ app.use(cors());
 
 // routes
 const usersRoutes = require("./Routes/users-routes");
+const newsRoutes = require("./Routes/news-routes");
 
-// app.get("/", (req, res) => res.send("Hello World"));
-
+app.use("/api/v1/news", newsRoutes);
 app.use("/api/v1/user", usersRoutes);
 
 app.use((req, res, next) => {
