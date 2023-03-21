@@ -14,7 +14,9 @@ app.use(cors());
 const usersRoutes = require("./Routes/users-routes");
 const newsRoutes = require("./Routes/news-routes");
 const eventRoutes = require("./Routes/event-routes");
+const reviewRoutes = require("./Routes/review-routes");
 
+app.use("/api/v1/reviews", reviewRoutes);
 app.use("/api/v1/event", eventRoutes);
 app.use("/api/v1/news", newsRoutes);
 app.use("/api/v1/user", usersRoutes);

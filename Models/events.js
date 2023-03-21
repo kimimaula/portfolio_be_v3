@@ -5,6 +5,16 @@ const EventSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  eventDescription: {
+    type: String,
+    required: true,
+  },
+  reviews: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Review",
+    },
+  ],
 });
 
 const Events = mongoose.model("Events", EventSchema);
