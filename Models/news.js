@@ -9,6 +9,11 @@ const NewsSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  status: {
+    type: String,
+    enum: ["draft", "published"],
+    required: true,
+  },
 });
 
 const News = mongoose.model("News", NewsSchema);

@@ -1,11 +1,11 @@
 const Reviews = require("../models/reviews");
 const Events = require("../models/events");
-const Notes = require("../models/notes");
+const User = require("../models/user");
 const validateToken = require("../validation/validatetoken");
 const isEmpty = require("is-empty");
 
 // get reviews owned by one user, auth needed
-const getUserNotes = async (req, res, next) => {
+const getReviews = async (req, res, next) => {
   try {
     const authHeaderValue = req?.headers["authorization"];
 
@@ -51,20 +51,20 @@ const addNotes = async (req, res, next) => {
     }
     const token = await authHeaderValue.replace("Bearer ", "");
     const { error, id } = await validateToken(token);
-    const { eventName, review, rating, event } = req.body;
-    const createdReview = new Reviews({
+    // const { eventName, review, rating, event } = req.body;
+    const createdNotes = new Notes({
       review,
       rating,
       event,
       user: id,
     });
 
-    await createdReview.save();
+    // await createdNotes.save();
 
-    await Events.updateOne(
-      { _id: event },
-      { $push: { reviews: createdReview._id } }
-    );
+    // await User.updateOne(
+    //   { _id: event },
+    //   { $push: { reviews: createdNotes._id } }
+    // );
 
     return res.status(200).json({
       status: "success",
@@ -79,4 +79,4 @@ const addNotes = async (req, res, next) => {
 };
 
 exports.addNotes = addNotes;
-exports.getUserNotes = getUserNotes;
+exports.getReviews = getReviews;

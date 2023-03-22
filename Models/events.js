@@ -9,6 +9,11 @@ const EventSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  status: {
+    type: String,
+    enum: ["draft", "published"],
+    required: true,
+  },
   reviews: [
     {
       type: mongoose.Schema.Types.ObjectId,
