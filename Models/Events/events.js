@@ -20,6 +20,11 @@ const EventSchema = new mongoose.Schema({
       ref: "Reviews",
     },
   ],
+  user: {
+    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
 });
 
 const Events = mongoose.model("Events", EventSchema);

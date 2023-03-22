@@ -14,6 +14,11 @@ const NewsItemSchema = new mongoose.Schema({
     enum: ["draft", "published"],
     required: true,
   },
+  user: {
+    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
 });
 
 const News = mongoose.model("News", NewsItemSchema);
