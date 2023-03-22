@@ -4,6 +4,7 @@ const User = require("../Models/Users/user");
 const News = require("../Models/News/news");
 const validateToken = require("../validation/validatetoken");
 const isEmpty = require("is-empty");
+const mongoose = require("mongoose");
 
 // get reviews owned by one user, auth needed
 const getAdminData = async (req, res, next) => {
@@ -65,47 +66,124 @@ const getAdminData = async (req, res, next) => {
 };
 
 // add reviews, auth needed
-// const addNotes = async (req, res, next) => {
-//   try {
-//     const authHeaderValue = req.headers && req.headers.authorization;
-//     if (
-//       !authHeaderValue ||
-//       authHeaderValue === "undefined" ||
-//       authHeaderValue === ""
-//     ) {
-//       return res.status(422).json({
-//         success: false,
-//         message: "You are required to login to add reviews",
-//       });
-//     }
-//     const token = await authHeaderValue.replace("Bearer ", "");
-//     const { error, id } = await validateToken(token);
-//     // const { eventName, review, rating, event } = req.body;
-//     const createdNotes = new Notes({
-//       review,
-//       rating,
-//       event,
-//       user: id,
-//     });
+const editEvents = async (req, res, next) => {
+  try {
+    const authHeaderValue = req.headers && req.headers.authorization;
+    const { _id, status, eventDescription, eventName } = req.body;
 
-//     // await createdNotes.save();
+    if (
+      !authHeaderValue ||
+      authHeaderValue === "undefined" ||
+      authHeaderValue === ""
+    ) {
+      return res.status(422).json({
+        success: false,
+        message: "You are required to login to add reviews",
+      });
+    }
+    const token = await authHeaderValue.replace("Bearer ", "");
+    const { error, id, isAdmin } = await validateToken(token);
 
-//     // await User.updateOne(
-//     //   { _id: event },
-//     //   { $push: { reviews: createdNotes._id } }
-//     // );
+    if (!isAdmin) {
+      return res.status(422).json({
+        success: false,
+        message: "Only admins allowed",
+      });
+    }
 
-//     return res.status(200).json({
-//       status: "success",
-//     });
-//   } catch (error) {
-//     console.log("---error", error);
-//     return res.status(422).json({
-//       status: "error",
-//       message: error?.errors?.event?.message || "An unexpected error occured",
-//     });
-//   }
-// };
+    const updatedEvent = {
+      status: status,
+      eventDescription: eventDescription,
+      eventName: eventName,
+      user: new mongoose.Types.ObjectId(id),
+    };
 
-// exports.addNotes = addNotes;
+    const EventId = new mongoose.Types.ObjectId(req.body._id);
+
+    const event = await Events.findByIdAndUpdate(
+      { _id: EventId },
+      updatedEvent,
+      {
+        new: true,
+      }
+    );
+
+    if (!event) {
+      return res.status(404).json({
+        status: "error",
+        message: "Event not found",
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+    });
+  } catch (error) {
+    console.log("---error", error);
+    return res.status(422).json({
+      status: "error",
+      message: error?.errors?.event?.message || "An unexpected error occured",
+    });
+  }
+};
+
+const editNews = async (req, res, next) => {
+  try {
+    const authHeaderValue = req.headers && req.headers.authorization;
+    const { _id, status, description, title } = req.body;
+
+    if (
+      !authHeaderValue ||
+      authHeaderValue === "undefined" ||
+      authHeaderValue === ""
+    ) {
+      return res.status(422).json({
+        success: false,
+        message: "You are required to login to add reviews",
+      });
+    }
+    const token = await authHeaderValue.replace("Bearer ", "");
+    const { error, id, isAdmin } = await validateToken(token);
+
+    if (!isAdmin) {
+      return res.status(422).json({
+        success: false,
+        message: "Only admins allowed",
+      });
+    }
+
+    const updatedNews = {
+      status: status,
+      description: description,
+      title: title,
+      user: new mongoose.Types.ObjectId(id),
+    };
+
+    const NewsId = new mongoose.Types.ObjectId(req.body._id);
+
+    const news = await News.findByIdAndUpdate({ _id: NewsId }, updatedNews, {
+      new: true,
+    });
+
+    if (!news) {
+      return res.status(404).json({
+        status: "error",
+        message: "News not found",
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+    });
+  } catch (error) {
+    console.log("---error", error);
+    return res.status(422).json({
+      status: "error",
+      message: error?.errors?.event?.message || "An unexpected error occured",
+    });
+  }
+};
+
+exports.editNews = editNews;
+exports.editEvents = editEvents;
 exports.getAdminData = getAdminData;

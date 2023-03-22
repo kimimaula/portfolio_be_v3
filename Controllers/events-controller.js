@@ -71,36 +71,32 @@ const getEventsName = async (req, res, next) => {
 
 const getAllEvents = async (req, res, next) => {
   try {
-    const eventRatings = await Reviews.aggregate([
-      {
-        $group: {
-          _id: "$event",
-          averageRating: { $avg: { $toDouble: "$rating" } },
-        },
-      },
+    const eventRatings = await Events.aggregate([
       {
         $lookup: {
-          from: "events",
-          localField: "_id",
-          foreignField: "_id",
-          as: "event",
-        },
-      },
-      {
-        $unwind: "$event",
-      },
-      {
-        $match: {
-          "event.status": "published",
+          from: "reviews",
+          let: { eventId: "$_id" },
+          pipeline: [
+            { $match: { $expr: { $eq: ["$event", "$$eventId"] } } },
+            {
+              $group: {
+                _id: "$event",
+                averageRating: { $avg: { $toDouble: "$rating" } },
+              },
+            },
+          ],
+          as: "reviews",
         },
       },
       {
         $project: {
           _id: 0,
           eventId: "$_id",
-          eventName: "$event.eventName",
-          description: "$event.description",
-          averageRating: 1,
+          eventName: 1,
+          description: 1,
+          averageRating: {
+            $ifNull: [{ $arrayElemAt: ["$reviews.averageRating", 0] }, 0],
+          },
         },
       },
     ]);
