@@ -6,6 +6,7 @@ module.exports = async function ValidateToken(token) {
   user = decoded.user;
   email = decoded.email;
   id = decoded.id;
+  isAdmin = decoded.isAdmin;
 
-  return { id: id, user: user, email: email };
+  return { id: id, user: user, email: email, isAdmin: isAdmin };
 };
