@@ -28,3 +28,4 @@ Changelog v0.1.3 22/3/2023
 6. Added isadmin and retrieve from token
 7. Add status publish to news and events and only return published content
 8. Fix file names as previously changed Models folder
+9. Updated events and news with ref to user
