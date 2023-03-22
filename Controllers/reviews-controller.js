@@ -1,5 +1,5 @@
-const Reviews = require("../models/reviews");
-const Events = require("../models/events");
+const Reviews = require("../Models/Reviews/reviews");
+const Events = require("../Models/Events/events");
 const validateToken = require("../validation/validatetoken");
 const isEmpty = require("is-empty");
 

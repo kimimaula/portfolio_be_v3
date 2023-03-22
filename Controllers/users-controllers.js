@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const isEmpty = require("is-empty");
 
-const User = require("../models/user");
+const User = require("../Models/Users/user");
 const validateRegisterInput = require("../validation/register");
 const validateLoginInput = require("../Validation/login");
 
