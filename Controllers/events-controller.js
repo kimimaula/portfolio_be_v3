@@ -1,5 +1,5 @@
-const Events = require("../models/events");
-const Reviews = require("../models/reviews");
+const Events = require("../Models/Events/events");
+const Reviews = require("../Models/Reviews/reviews");
 const mongoose = require("mongoose");
 
 const getEvent = async (req, res, next) => {
@@ -84,6 +84,14 @@ const getAllEvents = async (req, res, next) => {
           localField: "_id",
           foreignField: "_id",
           as: "event",
+        },
+      },
+      {
+        $unwind: "$event",
+      },
+      {
+        $match: {
+          "event.status": "published",
         },
       },
       {

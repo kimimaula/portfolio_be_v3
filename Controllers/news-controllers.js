@@ -1,8 +1,8 @@
-const News = require("../models/news");
+const News = require("../Models/News/news");
 
 const getNews = async (req, res, next) => {
   try {
-    const news = await News.find();
+    const news = await News.find({ status: "published" });
     return res.status(200).json({
       status: "success",
       data: news,
