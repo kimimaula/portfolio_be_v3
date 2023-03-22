@@ -10,10 +10,12 @@ const ReviewSchema = new mongoose.Schema({
     required: true,
   },
   event: {
+    required: true,
     type: mongoose.Schema.Types.ObjectId,
     ref: "Events",
   },
   user: {
+    required: true,
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },

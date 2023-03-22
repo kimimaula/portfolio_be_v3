@@ -13,7 +13,7 @@ const login = async (req, res, next) => {
   if (!isValid) {
     return res.status(422).json({
       success: false,
-      message: errors,
+      message: error?.errors?.event?.message || "An unexpected error occured",
     });
   }
 
@@ -23,7 +23,7 @@ const login = async (req, res, next) => {
   } catch {
     return res.status(500).json({
       success: false,
-      message: "Whoops, something went wrong. Please try again later",
+      message: error?.errors?.event?.message || "An unexpected error occured",
     });
   }
 
@@ -77,7 +77,7 @@ const register = async (req, res, next) => {
   if (!isValid) {
     return res.status(422).json({
       success: false,
-      message: errors,
+      message: error?.errors?.event?.message || "An unexpected error occured",
     });
   }
 
@@ -100,7 +100,8 @@ const register = async (req, res, next) => {
       } catch (err) {
         return res.status(422).json({
           status: "error",
-          message: "Whoops, something went wrong. Please try again later",
+          message:
+            error?.errors?.event?.message || "An unexpected error occured",
         });
       }
     });

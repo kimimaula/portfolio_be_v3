@@ -1,13 +1,18 @@
 const Reviews = require("../models/reviews");
 const Events = require("../models/events");
 const validateToken = require("../validation/validatetoken");
+const isEmpty = require("is-empty");
 
 // get reviews owned by one user, auth needed
-const getUserREviews = async (req, res, next) => {
+const getUserReviews = async (req, res, next) => {
   try {
-    const authHeaderValue = req.headers["authorization"];
+    const authHeaderValue = req?.headers["authorization"];
 
-    if (!authHeaderValue) {
+    if (
+      !authHeaderValue ||
+      typeof authHeaderValue === "undefined" ||
+      authHeaderValue === ""
+    ) {
       return res.status(422).json({
         success: false,
         message: "Login Required",
@@ -28,10 +33,10 @@ const getUserREviews = async (req, res, next) => {
     return res.status(200).json({
       status: "success",
       data: reviews.map((review) => {
+        // const event = review.event ? review.event.eventName : "";
         return {
           _id: review._id,
           review: review.review,
-          eventNane: review.event.eventName,
           rating: review.rating,
           event: review.event,
           user: review.user,
@@ -41,7 +46,7 @@ const getUserREviews = async (req, res, next) => {
   } catch (error) {
     return res.status(422).json({
       status: "error",
-      message: "Whoops, something went wrong. Please try again later",
+      message: error?.errors?.event?.message || "An unexpected error occured",
     });
   }
 };
@@ -49,19 +54,20 @@ const getUserREviews = async (req, res, next) => {
 // add reviews, auth needed
 const addReviews = async (req, res, next) => {
   try {
-    const authHeaderValue = req.headers["authorization"];
-
-    if (!authHeaderValue) {
+    const authHeaderValue = req.headers && req.headers.authorization;
+    if (
+      !authHeaderValue ||
+      authHeaderValue === "undefined" ||
+      authHeaderValue === ""
+    ) {
       return res.status(422).json({
         success: false,
         message: "You are required to login to add reviews",
       });
     }
-
     const token = await authHeaderValue.replace("Bearer ", "");
     const { error, id } = await validateToken(token);
     const { eventName, review, rating, event } = req.body;
-
     const createdReview = new Reviews({
       review,
       rating,
@@ -80,12 +86,13 @@ const addReviews = async (req, res, next) => {
       status: "success",
     });
   } catch (error) {
+    console.log("---error", error);
     return res.status(422).json({
       status: "error",
-      message: "Whoops, something went wrong. Please try again later",
+      message: error?.errors?.event?.message || "An unexpected error occured",
     });
   }
 };
 
 exports.addReviews = addReviews;
-exports.getUserREviews = getUserREviews;
+exports.getUserReviews = getUserReviews;

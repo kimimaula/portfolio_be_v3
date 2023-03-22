@@ -10,7 +10,7 @@ const getNews = async (req, res, next) => {
   } catch (error) {
     return res.status(422).json({
       status: "error",
-      message: "Whoops, something went wrong. Please try again later",
+      message: error?.errors?.event?.message || "An unexpected error occured",
     });
   }
 };
