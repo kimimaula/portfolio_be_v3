@@ -93,7 +93,7 @@ const editEvents = async (req, res, next) => {
 
     const updatedEvent = {
       status: status,
-      eventDescription: eventDescription,
+      description: eventDescription,
       eventName: eventName,
       user: new mongoose.Types.ObjectId(id),
     };
@@ -184,6 +184,101 @@ const editNews = async (req, res, next) => {
   }
 };
 
+const addEvents = async (req, res, next) => {
+  try {
+    const authHeaderValue = req.headers && req.headers.authorization;
+    const { _id, status, description, eventName } = req.body;
+
+    if (
+      !authHeaderValue ||
+      authHeaderValue === "undefined" ||
+      authHeaderValue === ""
+    ) {
+      return res.status(422).json({
+        success: false,
+        message: "You are required to login to add reviews",
+      });
+    }
+    const token = await authHeaderValue.replace("Bearer ", "");
+    const { error, id, isAdmin } = await validateToken(token);
+
+    if (!isAdmin) {
+      return res.status(422).json({
+        success: false,
+        message: "Only admins allowed",
+      });
+    }
+
+    const createdEvent = new Events({
+      status,
+      description,
+      eventName,
+      user: id,
+      reviews: [],
+    });
+
+    await createdEvent.save();
+
+    return res.status(200).json({
+      status: "success",
+    });
+  } catch (error) {
+    console.log("---error", error);
+    return res.status(422).json({
+      status: "error",
+      message: error?.errors?.event?.message || "An unexpected error occured",
+    });
+  }
+};
+
+const AddNews = async (req, res, next) => {
+  try {
+    const authHeaderValue = req.headers && req.headers.authorization;
+    const { _id, status, description, title } = req.body;
+
+    if (
+      !authHeaderValue ||
+      authHeaderValue === "undefined" ||
+      authHeaderValue === ""
+    ) {
+      return res.status(422).json({
+        success: false,
+        message: "You are required to login to add reviews",
+      });
+    }
+    const token = await authHeaderValue.replace("Bearer ", "");
+    const { error, id, isAdmin } = await validateToken(token);
+
+    if (!isAdmin) {
+      return res.status(422).json({
+        success: false,
+        message: "Only admins allowed",
+      });
+    }
+
+    const createdNews = new News({
+      status,
+      description,
+      title,
+      user: id,
+    });
+
+    await createdNews.save();
+
+    return res.status(200).json({
+      status: "success",
+    });
+  } catch (error) {
+    console.log("---error", error);
+    return res.status(422).json({
+      status: "error",
+      message: error?.errors?.event?.message || "An unexpected error occured",
+    });
+  }
+};
+
+exports.addEvents = addEvents;
+exports.AddNews = AddNews;
 exports.editNews = editNews;
 exports.editEvents = editEvents;
 exports.getAdminData = getAdminData;

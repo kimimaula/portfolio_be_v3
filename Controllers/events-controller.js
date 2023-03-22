@@ -73,6 +73,9 @@ const getAllEvents = async (req, res, next) => {
   try {
     const eventRatings = await Events.aggregate([
       {
+        $match: { status: "published" },
+      },
+      {
         $lookup: {
           from: "reviews",
           let: { eventId: "$_id" },
