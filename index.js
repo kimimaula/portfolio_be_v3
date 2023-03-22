@@ -15,7 +15,9 @@ const usersRoutes = require("./Routes/users-routes");
 const newsRoutes = require("./Routes/news-routes");
 const eventRoutes = require("./Routes/events-routes");
 const reviewRoutes = require("./Routes/review-routes");
+const notesRoutes = require("./Routes/notes-routes");
 
+app.use("/api/v1/notes", notesRoutes);
 app.use("/api/v1/reviews", reviewRoutes);
 app.use("/api/v1/events", eventRoutes);
 app.use("/api/v1/news", newsRoutes);

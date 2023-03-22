@@ -45,6 +45,7 @@ const login = async (req, res, next) => {
           id: user._id,
           user: user.username,
           email: user.email,
+          isAdmin: user.isAdmin,
         },
         process.env.SECRETKEY,
         { expiresIn: "24h" },
