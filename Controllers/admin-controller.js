@@ -91,29 +91,12 @@ const editEvents = async (req, res, next) => {
       });
     }
 
-    const updatedEvent = {
-      status: status,
-      description: eventDescription,
-      eventName: eventName,
-      user: new mongoose.Types.ObjectId(id),
-    };
-
     const EventId = new mongoose.Types.ObjectId(req.body._id);
 
-    const event = await Events.findByIdAndUpdate(
+    await Events.updateOne(
       { _id: EventId },
-      updatedEvent,
-      {
-        new: true,
-      }
+      { $set: { status, description: eventDescription, eventName } }
     );
-
-    if (!event) {
-      return res.status(404).json({
-        status: "error",
-        message: "Event not found",
-      });
-    }
 
     return res.status(200).json({
       status: "success",
@@ -161,16 +144,10 @@ const editNews = async (req, res, next) => {
 
     const NewsId = new mongoose.Types.ObjectId(req.body._id);
 
-    const news = await News.findByIdAndUpdate({ _id: NewsId }, updatedNews, {
-      new: true,
-    });
-
-    if (!news) {
-      return res.status(404).json({
-        status: "error",
-        message: "News not found",
-      });
-    }
+    await News.updateOne(
+      { _id: NewsId },
+      { $set: { status, description, title } }
+    );
 
     return res.status(200).json({
       status: "success",

@@ -64,6 +64,7 @@ const login = async (req, res, next) => {
             token: "Bearer " + token,
             id: user._id,
             user: user.username,
+            isAdmin: user.isAdmin,
           });
         }
       );
@@ -93,6 +94,7 @@ const register = async (req, res, next) => {
     password,
     reviews: [],
     notes: [],
+    isAdmin: false,
   });
 
   bcrypt.genSalt(saltRounds, function (err, salt) {
@@ -203,7 +205,6 @@ const changePassword = async (req, res, next) => {
   }
 
   const existingUser = await User.find({ email: email });
-  console.log("----existingUser", existingUser);
 
   bcrypt.genSalt(saltRounds, function (err, salt) {
     bcrypt.hash(password, salt, async (err, hash) => {

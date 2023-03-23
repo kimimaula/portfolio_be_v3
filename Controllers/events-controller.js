@@ -11,14 +11,22 @@ const getEvent = async (req, res, next) => {
       },
       {
         $lookup: {
-          from: "reviews",
+          from: Reviews.collection.name,
           localField: "reviews",
           foreignField: "_id",
           as: "reviews",
         },
       },
       {
-        $unwind: "$reviews",
+        $match: {
+          "reviews.status": "published",
+        },
+      },
+      {
+        $unwind: {
+          path: "$reviews",
+          preserveNullAndEmptyArrays: true,
+        },
       },
       {
         $lookup: {
@@ -29,15 +37,46 @@ const getEvent = async (req, res, next) => {
         },
       },
       {
-        $unwind: "$reviews.user",
+        $unwind: {
+          path: "$reviews.user",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $addFields: {
+          "reviews.rating": {
+            $ifNull: [{ $toInt: "$reviews.rating" }, 0],
+          },
+        },
       },
       {
         $group: {
           _id: "$_id",
           eventName: { $first: "$eventName" },
           description: { $first: "$description" },
-          reviews: { $push: "$reviews" },
-          averageRating: { $avg: { $toInt: "$reviews.rating" } },
+          reviews: {
+            $push: {
+              $cond: [{ $eq: ["$reviews", null] }, null, "$reviews"],
+            },
+          },
+          averageRating: { $avg: "$reviews.rating" },
+          reviewCount: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          eventName: 1,
+          description: 1,
+          reviews: 1,
+          averageRating: 1,
+          reviewCount: {
+            $cond: [
+              { $eq: ["$reviewCount", 0] },
+              0,
+              { $subtract: ["$reviewCount", 1] },
+            ],
+          },
         },
       },
     ]);
@@ -71,34 +110,63 @@ const getEventsName = async (req, res, next) => {
 
 const getAllEvents = async (req, res, next) => {
   try {
-    const eventRatings = await Events.aggregate([
+    const eventsWithAverageRating = await Events.aggregate([
       {
-        $match: { status: "published" },
+        $match: {
+          status: "published",
+        },
       },
       {
         $lookup: {
-          from: "reviews",
-          let: { eventId: "$_id" },
-          pipeline: [
-            { $match: { $expr: { $eq: ["$event", "$$eventId"] } } },
-            {
-              $group: {
-                _id: "$event",
-                averageRating: { $avg: { $toDouble: "$rating" } },
-              },
-            },
-          ],
+          from: Reviews.collection.name,
+          localField: "_id",
+          foreignField: "event",
           as: "reviews",
         },
       },
       {
+        $match: {
+          "reviews.status": "published",
+        },
+      },
+      {
+        $unwind: {
+          path: "$reviews",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $addFields: {
+          "reviews.rating": {
+            $ifNull: [{ $toDouble: "$reviews.rating" }, 0],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: "$_id",
+          eventName: { $first: "$eventName" },
+          description: { $first: "$description" },
+          status: { $first: "$status" },
+          user: { $first: "$user" },
+          averageRating: { $avg: "$reviews.rating" },
+          reviewCount: { $sum: 1 },
+        },
+      },
+      {
         $project: {
-          _id: 0,
-          eventId: "$_id",
+          _id: 1,
           eventName: 1,
           description: 1,
-          averageRating: {
-            $ifNull: [{ $arrayElemAt: ["$reviews.averageRating", 0] }, 0],
+          status: 1,
+          user: 1,
+          averageRating: 1,
+          reviewCount: {
+            $cond: [
+              { $eq: ["$reviewCount", 0] },
+              0,
+              { $subtract: ["$reviewCount", 1] },
+            ],
           },
         },
       },
@@ -106,7 +174,7 @@ const getAllEvents = async (req, res, next) => {
 
     return res.status(200).json({
       status: "success",
-      data: eventRatings,
+      data: eventsWithAverageRating,
     });
   } catch (error) {
     console.log("---error", error);

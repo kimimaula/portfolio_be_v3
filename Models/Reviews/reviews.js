@@ -19,6 +19,11 @@ const ReviewSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+  status: {
+    type: String,
+    enum: ["draft", "published"],
+    required: true,
+  },
 });
 
 const Reviews = mongoose.model("Reviews", ReviewSchema);
