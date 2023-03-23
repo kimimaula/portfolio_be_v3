@@ -2,8 +2,11 @@ const saltRounds = 12;
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const isEmpty = require("is-empty");
+const nodemailer = require("nodemailer");
+const axios = require("axios");
 
 const User = require("../Models/Users/user");
+const UserOtp = require("../Models/UserOtp/userOtp");
 const validateRegisterInput = require("../validation/register");
 const validateLoginInput = require("../Validation/login");
 
@@ -13,7 +16,7 @@ const login = async (req, res, next) => {
   if (!isValid) {
     return res.status(422).json({
       success: false,
-      message: error?.errors?.event?.message || "An unexpected error occured",
+      message: errors || "An unexpected error occured",
     });
   }
 
@@ -23,7 +26,7 @@ const login = async (req, res, next) => {
   } catch {
     return res.status(500).json({
       success: false,
-      message: error?.errors?.event?.message || "An unexpected error occured",
+      message: errors || "An unexpected error occured",
     });
   }
 
@@ -78,7 +81,7 @@ const register = async (req, res, next) => {
   if (!isValid) {
     return res.status(422).json({
       success: false,
-      message: error?.errors?.event?.message || "An unexpected error occured",
+      message: errors || "An unexpected error occured",
     });
   }
 
@@ -109,5 +112,121 @@ const register = async (req, res, next) => {
   });
 };
 
+const getToken = async (req, res, next) => {
+  const { email } = req.body;
+
+  try {
+    var otp = Math.random();
+    otp = otp * 1000000;
+    otp = parseInt(otp);
+
+    const apiKey = process.env.EMAILAPIKEY;
+    const url = "https://api.sendinblue.com/v3/smtp/email";
+
+    const emailData = {
+      sender: {
+        name: "Otp Verification",
+        email: "kimimaula@gmail.com",
+      },
+      to: [
+        {
+          email: "kimimaula@gmail.com",
+          name: "User",
+        },
+      ],
+      subject: "Otp Verification",
+      htmlContent: `<p>Your OTP is ${otp}</p>`,
+    };
+
+    const headers = {
+      "api-key": apiKey,
+      "Content-Type": "application/json",
+    };
+
+    try {
+      const user = await User.find({ email: email });
+      const newOtp = await new UserOtp({
+        UserId: user[0]?._id,
+        otp: otp,
+        createdAt: new Date(),
+      });
+
+      const result = await newOtp.save();
+      if (!result) {
+        return res.status(422).json({
+          status: "error",
+          message: "Otp creation failed",
+        });
+      }
+      await axios.post(url, emailData, { headers });
+      res.status(201).json({ status: "success" });
+    } catch (error) {
+      console.error(error);
+      return res.status(422).json({
+        status: "error",
+        message: "Otp creation failed",
+      });
+    }
+  } catch (error) {
+    console.log("---error", error);
+    return res.status(422).json({
+      status: "error",
+      message: "Otp creation failed",
+    });
+  }
+};
+
+const verifyOtp = async (req, res, next) => {
+  const { otp, email } = req.body;
+
+  if (!otp || !email) {
+    return res.status(422).json({
+      status: "error",
+      message: "Email and Otp required",
+    });
+  }
+  const dbOtp = await UserOtp.find({ otp: otp });
+  if (!dbOtp || dbOtp?.length === 0)
+    return res.status(422).json({ status: "error", message: "Otp not found" });
+
+  return res.json({ status: "success" });
+};
+
+const changePassword = async (req, res, next) => {
+  const { email, password } = req.body;
+
+  if (!password || !email) {
+    return res.status(422).json({
+      status: "error",
+      message: "Email and Password required",
+    });
+  }
+
+  const existingUser = await User.find({ email: email });
+  console.log("----existingUser", existingUser);
+
+  bcrypt.genSalt(saltRounds, function (err, salt) {
+    bcrypt.hash(password, salt, async (err, hash) => {
+      try {
+        await User.updateOne(
+          { _id: existingUser[0]?.id },
+          { $set: { password: hash } }
+        );
+        res.status(201).json({ status: "success" });
+      } catch (error) {
+        console.log("---error", error);
+        return res.status(422).json({
+          status: "error",
+          message:
+            error?.errors?.event?.message || "An unexpected error occured",
+        });
+      }
+    });
+  });
+};
+
+exports.changePassword = changePassword;
+exports.verifyOtp = verifyOtp;
+exports.getToken = getToken;
 exports.register = register;
 exports.login = login;
