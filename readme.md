@@ -1,5 +1,43 @@
 REV-SERVER
 
+An Application created for Regov Technologies Interview
+
+## Requirements
+
+- Node.js
+- npm
+- MongoDB
+
+## Setup
+
+1. Clone the repository:
+   https://github.com/kimimaula/regov-be.git
+2. Navigate to the project directory:
+   `cd regov-be`
+3. Install the dependencies:
+   `npm install`
+4. Create a `.env` file in the root directory of the project to store the environment variables:
+   touch .env
+5. Open the `.env` file and add the following environment variables:
+   MONGOURI="your_mongo_uri_here"
+   PORT="4200"
+   SECRETKEY="your_secret_key_here"
+   EMAILAPIKEY="your_email_api_key_here"
+   Replace `your_mongo_uri_here`, `your_secret_key_here`, and `your_email_api_key_here` with actual values.
+6. Save the `.env` file and close it.
+
+## Running the Application
+
+To start the application, run the following command in the project directory:
+
+The application will start and listen on the specified port. You can now access the application in your web browser at `http://localhost:4200`.
+
+## Additional Information
+
+`npm run start`
+
+## Changelog
+
 Changelog v0.1.1 20/3/2023
 
 1. Add base index with connection to mongo
