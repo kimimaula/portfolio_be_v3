@@ -116,6 +116,13 @@ const register = async (req, res, next) => {
 const getToken = async (req, res, next) => {
   const { email } = req.body;
 
+  if (!email) {
+    return res.status(422).json({
+      status: "error",
+      message: "Email required",
+    });
+  }
+
   try {
     var otp = Math.random();
     otp = otp * 1000000;

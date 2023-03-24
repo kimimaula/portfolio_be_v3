@@ -4,9 +4,9 @@ const adminController = require("../Controllers/admin-controller");
 const router = express.Router();
 
 router.get("/all", adminController.getAdminData);
-router.post("/edit_events", adminController.editEvents);
-router.post("/edit_news", adminController.editNews);
-router.post("/add_events", adminController.addEvents);
-router.post("/add_news", adminController.AddNews);
+router.post("/editEvents", adminController.editEvents);
+router.post("/editNews", adminController.editNews);
+router.post("/addEvents", adminController.addEvents);
+router.post("/addNews", adminController.AddNews);
 
 module.exports = router;
