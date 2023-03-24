@@ -184,24 +184,8 @@ const getToken = async (req, res, next) => {
   }
 };
 
-const verifyOtp = async (req, res, next) => {
-  const { otp, email } = req.body;
-
-  if (!otp || !email) {
-    return res.status(422).json({
-      status: "error",
-      message: "Email and Otp required",
-    });
-  }
-  const dbOtp = await UserOtp.find({ otp: otp });
-  if (!dbOtp || dbOtp?.length === 0)
-    return res.status(422).json({ status: "error", message: "Otp not found" });
-
-  return res.json({ status: "success" });
-};
-
 const changePassword = async (req, res, next) => {
-  const { email, password } = req.body;
+  const { email, password, otp } = req.body;
 
   if (!password || !email) {
     return res.status(422).json({
@@ -209,6 +193,17 @@ const changePassword = async (req, res, next) => {
       message: "Email and Password required",
     });
   }
+
+  if (!otp) {
+    return res.status(422).json({
+      status: "error",
+      message: "OTP required",
+    });
+  }
+
+  const dbOtp = await UserOtp.find({ otp: otp });
+  if (!dbOtp || dbOtp?.length === 0)
+    return res.status(422).json({ status: "error", message: "OTP not found" });
 
   const existingUser = await User.find({ email: email });
 
@@ -233,7 +228,6 @@ const changePassword = async (req, res, next) => {
 };
 
 exports.changePassword = changePassword;
-exports.verifyOtp = verifyOtp;
 exports.getToken = getToken;
 exports.register = register;
 exports.login = login;

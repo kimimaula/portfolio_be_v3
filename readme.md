@@ -86,3 +86,7 @@ changelog v0.1.5 24/3/2024
 3. Removed unused nodemailer
 4. change app entry point
 5. Specify node version for heroku
+
+changelog v0.1.6 25/3/2023
+
+1. Merged verifyOtp and changePassword into one so we check otp before changing passowrd
