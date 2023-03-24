@@ -17,6 +17,10 @@ const eventRoutes = require("./Routes/events-routes");
 const reviewRoutes = require("./Routes/review-routes");
 const adminRoutes = require("./Routes/admin-routes");
 
+app.get("/", (req, res, next) => {
+  return res.json(`Hello, App is running on ${process.env.PORT}`);
+});
+
 app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1/reviews", reviewRoutes);
 app.use("/api/v1/events", eventRoutes);
