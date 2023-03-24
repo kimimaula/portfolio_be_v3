@@ -2,7 +2,7 @@ const Reviews = require("../Models/Reviews/reviews");
 const Events = require("../Models/Events/events");
 const User = require("../Models/Users/user");
 const News = require("../Models/News/news");
-const validateToken = require("../validation/validatetoken");
+const validateToken = require("../Validation/validatetoken");
 const isEmpty = require("is-empty");
 const mongoose = require("mongoose");
 

@@ -6,7 +6,7 @@ const axios = require("axios");
 
 const User = require("../Models/Users/user");
 const UserOtp = require("../Models/UserOtp/userOtp");
-const validateRegisterInput = require("../validation/register");
+const validateRegisterInput = require("../Validation/register");
 const validateLoginInput = require("../Validation/login");
 
 const login = async (req, res, next) => {
