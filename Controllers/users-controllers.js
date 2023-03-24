@@ -2,7 +2,6 @@ const saltRounds = 12;
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const isEmpty = require("is-empty");
-const nodemailer = require("nodemailer");
 const axios = require("axios");
 
 const User = require("../Models/Users/user");
