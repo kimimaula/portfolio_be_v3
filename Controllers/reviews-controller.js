@@ -1,6 +1,6 @@
 const Reviews = require("../Models/Reviews/reviews");
 const Events = require("../Models/Events/events");
-const validateToken = require("../Validation/validatetoken");
+const validateToken = require("../Validation/validateToken");
 const isEmpty = require("is-empty");
 const mongoose = require("mongoose");
 
