@@ -90,3 +90,4 @@ changelog v0.1.5 24/3/2024
 changelog v0.1.6 25/3/2023
 
 1. Merged verifyOtp and changePassword into one so we check otp before changing passowrd
+2. Fix events route where events that have no reviews are not being returned

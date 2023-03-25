@@ -18,8 +18,14 @@ const getEvent = async (req, res, next) => {
         },
       },
       {
-        $match: {
-          "reviews.status": "published",
+        $addFields: {
+          reviews: {
+            $filter: {
+              input: "$reviews",
+              as: "review",
+              cond: { $eq: ["$$review.status", "published"] },
+            },
+          },
         },
       },
       {
@@ -80,6 +86,7 @@ const getEvent = async (req, res, next) => {
         },
       },
     ]);
+
     return res.status(200).json({
       status: "success",
       data: event[0],
@@ -125,8 +132,14 @@ const getAllEvents = async (req, res, next) => {
         },
       },
       {
-        $match: {
-          "reviews.status": "published",
+        $addFields: {
+          reviews: {
+            $filter: {
+              input: "$reviews",
+              as: "review",
+              cond: { $eq: ["$$review.status", "published"] },
+            },
+          },
         },
       },
       {
