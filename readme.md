@@ -28,13 +28,13 @@ An Application created for Regov Technologies Interview
 
 ## Running the Application
 
+`npm run start`
+
 To start the application, run the following command in the project directory:
 
 The application will start and listen on the specified port. You can now access the application in your web browser at `http://localhost:4200`.
 
 ## Additional Information
-
-`npm run start`
 
 ## Changelog
 
