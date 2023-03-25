@@ -26,6 +26,20 @@ An Application created for Regov Technologies Interview
    Replace `your_mongo_uri_here`, `your_secret_key_here`, and `your_email_api_key_here` with actual values.
 6. Save the `.env` file and close it.
 
+## Connecting to a Database
+
+Local
+
+1. Install a local version of mongodb. Instructions can be found at https://www.prisma.io/dataguide/mongodb/setting-up-a-local-mongodb-database
+2. Create a database with the name regov
+3. Connect the api to the database by replacing "your_mongo_uri_here" with the local instance of mongoDB
+
+MongoDB Atlas
+
+1. Create an account and create a database named regov
+2. Create a connection string
+3. Connect the api to the database by replacing "your_mongo_uri_here" with the local instance of mongoDB
+
 ## Running the Application
 
 `npm run start`
