@@ -38,7 +38,7 @@ MongoDB Atlas
 
 1. Create an account and create a database named regov
 2. Create a connection string
-3. Connect the api to the database by replacing "your_mongo_uri_here" with the local instance of mongoDB
+3. Connect the api to the database by replacing "your_mongo_uri_here" with the instance string of mongoDB from MongoDB Atlas
 
 ## Running the Application
 
