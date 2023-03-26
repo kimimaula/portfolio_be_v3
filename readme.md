@@ -83,7 +83,7 @@ Changelog v0.1.3 22/3/2023
 9. Updated events and news with ref to user
 10. Added routes for admins to add news and events
 
-changelog v0.1.4 23/3/2023
+Changelog v0.1.4 23/3/2023
 
 1. Added 3 api for users to generate otp, verify otp and change password
 2. Send isAdmin when user login
@@ -93,7 +93,7 @@ changelog v0.1.4 23/3/2023
 6. added 3 api for users to generate otp, verify otp and change password
 7. Integrate email server in sendinblue for OTP in email
 
-changelog v0.1.5 24/3/2024
+Changelog v0.1.5 24/3/2024
 
 1. Standardize admin route names to camelCase
 2. Fix path names
@@ -101,7 +101,11 @@ changelog v0.1.5 24/3/2024
 4. change app entry point
 5. Specify node version for heroku
 
-changelog v0.1.6 25/3/2023
+Changelog v0.1.6 25/3/2023
 
 1. Merged verifyOtp and changePassword into one so we check otp before changing passowrd
 2. Fix events route where events that have no reviews are not being returned
+
+Changelog v0.1.7 26/3/2023
+
+1. Sent message "Token expired, please log out and login again" when token has expired

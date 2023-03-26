@@ -106,7 +106,9 @@ const register = async (req, res, next) => {
         return res.status(422).json({
           status: "error",
           message:
-            error?.errors?.event?.message || "An unexpected error occured",
+            error?.errors?.event?.message ||
+            error?.message ||
+            "An unexpected error occured",
         });
       }
     });
@@ -220,7 +222,9 @@ const changePassword = async (req, res, next) => {
         return res.status(422).json({
           status: "error",
           message:
-            error?.errors?.event?.message || "An unexpected error occured",
+            error?.errors?.event?.message ||
+            error?.message ||
+            "An unexpected error occured",
         });
       }
     });

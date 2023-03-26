@@ -48,7 +48,10 @@ const getUserReviews = async (req, res, next) => {
   } catch (error) {
     return res.status(422).json({
       status: "error",
-      message: error?.errors?.event?.message || "An unexpected error occured",
+      message:
+        error?.errors?.event?.message ||
+        error?.message ||
+        "An unexpected error occured",
     });
   }
 };
@@ -92,7 +95,10 @@ const addReviews = async (req, res, next) => {
     console.log("---error", error);
     return res.status(422).json({
       status: "error",
-      message: error?.errors?.event?.message || "An unexpected error occured",
+      message:
+        error?.errors?.event?.message ||
+        error?.message ||
+        "An unexpected error occured",
     });
   }
 };
@@ -129,7 +135,10 @@ const editReviews = async (req, res, next) => {
     console.log("---error", error);
     return res.status(422).json({
       status: "error",
-      message: error?.errors?.event?.message || "An unexpected error occured",
+      message:
+        error?.errors?.event?.message ||
+        error?.message ||
+        "An unexpected error occured",
     });
   }
 };

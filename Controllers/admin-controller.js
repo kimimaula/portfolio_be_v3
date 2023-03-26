@@ -60,7 +60,10 @@ const getAdminData = async (req, res, next) => {
     console.log("----error", error);
     return res.status(422).json({
       status: "error",
-      message: error?.errors?.event?.message || "An unexpected error occured",
+      message:
+        error?.errors?.event?.message ||
+        error?.message ||
+        "An unexpected error occured",
     });
   }
 };
@@ -105,7 +108,10 @@ const editEvents = async (req, res, next) => {
     console.log("---error", error);
     return res.status(422).json({
       status: "error",
-      message: error?.errors?.event?.message || "An unexpected error occured",
+      message:
+        error?.errors?.event?.message ||
+        error?.message ||
+        "An unexpected error occured",
     });
   }
 };
@@ -156,7 +162,10 @@ const editNews = async (req, res, next) => {
     console.log("---error", error);
     return res.status(422).json({
       status: "error",
-      message: error?.errors?.event?.message || "An unexpected error occured",
+      message:
+        error?.errors?.event?.message ||
+        error?.message ||
+        "An unexpected error occured",
     });
   }
 };
@@ -203,7 +212,10 @@ const addEvents = async (req, res, next) => {
     console.log("---error", error);
     return res.status(422).json({
       status: "error",
-      message: error?.errors?.event?.message || "An unexpected error occured",
+      message:
+        error?.errors?.event?.message ||
+        error?.message ||
+        "An unexpected error occured",
     });
   }
 };
@@ -249,7 +261,10 @@ const AddNews = async (req, res, next) => {
     console.log("---error", error);
     return res.status(422).json({
       status: "error",
-      message: error?.errors?.event?.message || "An unexpected error occured",
+      message:
+        error?.errors?.event?.message ||
+        error?.message ||
+        "An unexpected error occured",
     });
   }
 };

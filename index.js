@@ -5,6 +5,7 @@ const cors = require("cors");
 const app = express();
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+const packageJson = require("./package.json");
 dotenv.config();
 
 app.use(express.json());
@@ -18,7 +19,9 @@ const reviewRoutes = require("./Routes/review-routes");
 const adminRoutes = require("./Routes/admin-routes");
 
 app.get("/", (req, res, next) => {
-  return res.json(`Hello, App is running on ${process.env.PORT}`);
+  return res.json(
+    `Hello, App version ${packageJson.version} is running on ${process.env.PORT}`
+  );
 });
 
 app.use("/api/v1/admin", adminRoutes);
