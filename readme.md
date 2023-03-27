@@ -1,6 +1,6 @@
 REV-SERVER
 
-An Application created for Regov Technologies Interview
+An Application created for Kimmi's Portfolio
 
 ## Requirements
 
