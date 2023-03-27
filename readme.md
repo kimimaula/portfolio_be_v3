@@ -1,6 +1,6 @@
 REV-SERVER
 
-An Application created for Regov Technologies Interview
+An Application created for Kimmi's Portfolio
 
 ## Requirements
 
@@ -23,7 +23,9 @@ An Application created for Regov Technologies Interview
    PORT="4200"
    SECRETKEY="your_secret_key_here"
    EMAILAPIKEY="your_email_api_key_here"
-   Replace `your_mongo_uri_here`, `your_secret_key_here`, and `your_email_api_key_here` with actual values.
+   AWSKEYID="your_aws_key_id"
+   AWSKEYSECRET="your_aws_key_secret"
+   Replace `your_mongo_uri_here`, `your_secret_key_here`, `your_email_api_key_here`, `your_aws_key_id` and `your_aws_key_secret` with actual values.
 6. Save the `.env` file and close it.
 
 ## Connecting to a Database
