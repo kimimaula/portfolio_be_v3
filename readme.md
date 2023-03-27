@@ -109,3 +109,10 @@ Changelog v0.1.6 25/3/2023
 Changelog v0.1.7 26/3/2023
 
 1. Sent message "Token expired, please log out and login again" when token has expired
+
+Changelog v0.1.8 27/3/2023
+
+1. Installed aws sdk and multer for handling image uploads
+2. Added avatar url to User schema
+3. Added ability to upload avatar image for user
+4. Added getUser to get user data

@@ -8,6 +8,8 @@ const User = require("../Models/Users/user");
 const UserOtp = require("../Models/UserOtp/userOtp");
 const validateRegisterInput = require("../Validation/register");
 const validateLoginInput = require("../Validation/login");
+const { uploadImageToStorage } = require("../Helpers/imgHandler");
+const validateToken = require("../Validation/validateToken");
 
 const login = async (req, res, next) => {
   const { errors, isValid } = await validateLoginInput(req.body);
@@ -86,6 +88,9 @@ const register = async (req, res, next) => {
   }
 
   const { username, email, password } = req.body;
+  const avatar = req.file;
+
+  const url = await uploadImageToStorage(avatar);
 
   const createdUser = new User({
     username,
@@ -95,6 +100,8 @@ const register = async (req, res, next) => {
     notes: [],
     isAdmin: false,
   });
+
+  createdUser.avatar = url;
 
   bcrypt.genSalt(saltRounds, function (err, salt) {
     bcrypt.hash(createdUser.password, salt, async (err, hash) => {
@@ -106,8 +113,8 @@ const register = async (req, res, next) => {
         return res.status(422).json({
           status: "error",
           message:
-            error?.errors?.event?.message ||
-            error?.message ||
+            err?.errors?.event?.message ||
+            err?.message ||
             "An unexpected error occured",
         });
       }
@@ -231,6 +238,38 @@ const changePassword = async (req, res, next) => {
   });
 };
 
+const getUser = async (req, res, next) => {
+  try {
+    const authHeaderValue = req?.headers["authorization"];
+
+    if (
+      !authHeaderValue ||
+      typeof authHeaderValue === "undefined" ||
+      authHeaderValue === ""
+    ) {
+      return res.status(422).json({
+        success: false,
+        message: "Login Required",
+      });
+    }
+
+    const token = await authHeaderValue.replace("Bearer ", "");
+    const { error, id } = await validateToken(token);
+
+    const user = await User.findOne({ _id: id });
+    res.status(200).json({ status: "success", data: user });
+  } catch (error) {
+    return res.status(422).json({
+      status: "error",
+      message:
+        error?.errors?.event?.message ||
+        error?.message ||
+        "An unexpected error occured",
+    });
+  }
+};
+
+exports.getUser = getUser;
 exports.changePassword = changePassword;
 exports.getToken = getToken;
 exports.register = register;
